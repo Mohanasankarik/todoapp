@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            margin: 5px;
+            padding: 10px;
+        }
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #eee;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .buttons {
+            display: flex;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>To-Do List</h2>
+        <input type="text" id="task" placeholder="Enter a task">
+        <button onclick="addTask()">Add Task</button>
+        <ul id="todoList"></ul>
+    </div>
+    <script>
+        let todos = [];
+        function addTask() {
+            let taskInput = document.getElementById("task");
+            let taskValue = taskInput.value.trim();
+            if (taskValue === "") return;
+            
+            let task = { id: Date.now(), name: taskValue };
+            todos.push(task);
+            taskInput.value = "";
+            renderTasks();
+        }
+        function renderTasks() {
+            let list = document.getElementById("todoList");
+            list.innerHTML = "";
+            todos.forEach(task => {
+                let li = document.createElement("li");
+                li.classList.add("todo-item");
+                li.innerHTML = `
+                    <span id="task-${task.id}">${task.name}</span>
+                    <div class="buttons">
+                        <button onclick="editTask(${task.id})">Edit</button>
+                        <button onclick="deleteTask(${task.id})">Delete</button>
+                    </div>
+                `;
+                list.appendChild(li);
+            });
+        }
+        function editTask(id) {
+            let taskSpan = document.getElementById(`task-${id}`);
+            let newName = prompt("Edit your task:", taskSpan.innerText);
+            if (newName !== null && newName.trim() !== "") {
+                let task = todos.find(t => t.id === id);
+                if (task) task.name = newName.trim();
+                renderTasks();
+            }
+        }
+        function deleteTask(id) {
+            todos = todos.filter(t => t.id !== id);
+            renderTasks();
+        }
+    </script>
+</body>
+</html>
